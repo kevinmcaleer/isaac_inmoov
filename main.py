@@ -1,67 +1,41 @@
-from servo import Servo, servo2040
+# Isaaca Eyes Neopixels
+# Kevin McAleer
+# 24 April 2022
+
+import plasma
+from plasma import plasma2040
 from time import sleep
+from random import choice
 
-from plasma import WS2812 
-# Create the LED bar, using PIO 1 and State Machine 0
-led_bar = WS2812(servo2040.NUM_LEDS, 1, 0, servo2040.LED_DATA)
-
-# Start updating the LED bar
-led_bar.start()
-
-BRIGHTNESS = 0.5
-
-while True:
-    for j in range(0,100,1):
-        for i in range(servo2040.NUM_LEDS):
-            led_bar.set_hsv(i,j/100,1,BRIGHTNESS)
-            print(f"J is {j}, i is {i}")
-        sleep(0.01)
-    
-
-eyes_left_right = Servo(servo2040.SERVO_2)
-eyes_up_down = Servo(servo2040.SERVO_1)
-neck = Servo(servo2040.SERVO_3)
-sonny = Servo(servo2040.SERVO_18)
-
-eyes_left_right.to_mid()
-eyes_up_down.to_mid()
-sonny.to_mid()
-# neck.to_mid()
-
+NUM_LEDS = 2
+FPS = 60
+speed = 10
 WAIT = 0.01
 
-sleep(WAIT)
+led_strip = plasma.WS2812(NUM_LEDS, 0, 0, plasma2040.DAT, rgbw=True, color_order=plasma.COLOR_ORDER_GRB)
+led_strip.start(FPS)
 
-# for i in range(-80, 80,1):
-#     neck.value(i)
-#     sleep(WAIT)
+RED = 1.0
+BLUE = 0.6
+GREEN = 0.3
+PINK = 0.9
 
-# while True:
-#     sonny.to_min()
-#     sleep(0.25)
-#     sonny.to_mid()
-#     sleep(0.1)
-#     sonny.to_min()
-#     sleep(0.25)
-#     sonny.to_mid()
-#    
-#     sleep(1)
-# 
-# while True:
-#     for i in range (-40,40,1):
-#         eyes_left_right.value(i)
-#         sonny.value(i)
-#         print(i)
-#         sleep(WAIT)
-#     for i in range (40,-40,-1):
-#         eyes_left_right.value(i)
-#         sonny.value(i)
-#         sleep(WAIT)
-#     
-# for i in range(-50,50,1):
-#     eyes_up_down.value(i)
-#     sleep(WAIT)
-   
-eyes_left_right.disable()
-eyes_up_down.disable()
-neck.disable()
+colours = [RED,BLUE,GREEN,PINK]
+
+def red_glow():
+    
+    eyes = choice(colours)
+    for i in range(1,100,1):
+        value = i/100
+        led_strip.set_hsv(0,eyes,1,value)
+        led_strip.set_hsv(1,eyes,1,value)
+        sleep(WAIT)
+
+    for i in range(100,1,-1):
+        value = i/100
+        led_strip.set_hsv(0,eyes,1,value)
+        led_strip.set_hsv(1,eyes,1,value)
+        sleep(WAIT)
+
+while True:
+    red_glow()
