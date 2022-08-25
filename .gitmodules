@@ -1,0 +1,3 @@
+[submodule "easy_comms"]
+	path = easy_comms
+	url = https://github.com/kevinmcaleer/easy_comms
